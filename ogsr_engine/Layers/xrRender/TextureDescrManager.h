@@ -19,9 +19,16 @@ class CTextureDescrMngr
 	};
 	struct texture_spec
 	{
+		enum eWetnessModes : u32 {
+			eWetnessModeNone,
+			eWetnessModeSplashes,
+			eWetnessModeMoving,
+			eWetnessModeMixed,
+		};
 		shared_str			m_bump_name;
 		float				m_material;
 		bool				m_use_steep_parallax;
+		eWetnessModes m_wetness_mode;
 	};
 	struct texture_desc{
 		texture_assoc*		m_assoc;

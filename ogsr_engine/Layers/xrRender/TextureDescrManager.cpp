@@ -80,17 +80,23 @@ void CTextureDescrMngr::LoadLTX()
 					xr_delete(desc.m_spec);
 				desc.m_spec = xr_new<texture_spec>();
 
-				string_path bmode, bparallax;
-				int res = sscanf(value.c_str(), "bump_mode[%[^]]], material[%f], parallax[%[^]]", bmode, &desc.m_spec->m_material, bparallax);
+				string_path bmode{}, bparallax{}, wetness{};
+				int res = sscanf(value.c_str(), "bump_mode[%[^]]], material[%f], parallax[%[^]], wetness[%[^]]", bmode, &desc.m_spec->m_material, bparallax, wetness);
 				R_ASSERT(res >= 2);
 
 				if ((bmode[0] == 'u') && (bmode[1] == 's') && (bmode[2] == 'e') && (bmode[3] == ':')) // bump-map specified
 					desc.m_spec->m_bump_name = bmode + 4;
 	
-				if (res == 3) // parallax
-					desc.m_spec->m_use_steep_parallax = (bparallax[0] == 'y') && (bparallax[1] == 'e') && (bparallax[2] == 's');
+				desc.m_spec->m_use_steep_parallax = (bparallax[0] == 'y') && (bparallax[1] == 'e') && (bparallax[2] == 's');
+
+				if (strstr(wetness, "splashes"))
+					desc.m_spec->m_wetness_mode = texture_spec::eWetnessModeSplashes;
+				else if (strstr(wetness, "moving"))
+					desc.m_spec->m_wetness_mode = texture_spec::eWetnessModeMoving;
+				else if (strstr(wetness, "mixed"))
+					desc.m_spec->m_wetness_mode = texture_spec::eWetnessModeMixed;
 				else
-					desc.m_spec->m_use_steep_parallax = false;
+					desc.m_spec->m_wetness_mode = texture_spec::eWetnessModeNone;
 			}
 		}
 	}
